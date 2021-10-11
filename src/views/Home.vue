@@ -1,17 +1,15 @@
 <template>
   <div class="home container">
-    <!-- Header -->
+    <!-- Invoice header -->
     <div class="header flex">
-      <div class="left flex flex-column">
+      <div class="left flex-column">
         <h1>Invoices</h1>
-        <span>There are {{ invoiceData.length }} total invoices</span>
+        <span>There are {{invoiceData.length}} total invoices</span>
       </div>
       <div class="right flex">
-        <div @click="toggleFilterMenu" class="filter flex">
-          <span
-            >Filter by status <span v-if="filteredInvoice">: {{ filteredInvoice }}</span></span
-          >
-          <img src="@/assets/icon-arrow-down.svg" alt="" />
+        <div @click="toggleFilterMenu" class="filter flex" ref="filter">
+          <span>Filter by status: <span v-if="filteredInvoice">{{filteredInvoice}}</span></span>
+          <img src="@/assets/icon-arrow-down.svg" alt="">
           <ul v-show="filterMenu" class="filter-menu">
             <li @click="filteredInvoices">Draft</li>
             <li @click="filteredInvoices">Pending</li>
@@ -21,75 +19,79 @@
         </div>
         <div @click="newInvoice" class="button flex">
           <div class="inner-button flex">
-            <img src="@/assets/icon-plus.svg" alt="" />
-          </div>
+            <img src="@/assets/icon-plus.svg" alt="">
+          </div>   
           <span>New Invoice</span>
         </div>
       </div>
+
+
     </div>
-    <!-- Invoices -->
+    <!-- Invoices-->
     <div v-if="invoiceData.length > 0">
-      <Invoice v-for="(invoice, index) in filteredData" :invoice="invoice" :key="index" />
+      <Invoice v-for="(invoice, index) in filteredData" :invoice="invoice" :key="index"/>
     </div>
-    <div v-else class="empty flex flex-column">
-      <img src="@/assets/illustration-empty.svg" alt="" />
-      <h3>There is nothing here</h3>
-      <p>Create a new invoice by clicking the New Invoice button and get started</p>
+    <div v-else class="empty flex flex-column" >
+        <img src="@/assets/illustration-empty.svg" alt="">
+        <h3>There is nothing here </h3>
+        <p>Create a new invoice by clicking the New Invoice button and get started</p>
     </div>
-  </div>
+  </div> 
+ 
 </template>
 
 <script>
-import Invoice from "../components/Invoice";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState } from 'vuex';
+import Invoice from '../components/Invoice'
+
 export default {
-  name: "Home",
-  data() {
-    return {
-      filterMenu: null,
-      filteredInvoice: null,
-    };
+  name: 'Home',
+  components: { 
+    Invoice
   },
-  components: {
-    Invoice,
+  data(){
+    return {
+      filterMenu: false,
+      filteredInvoice: null
+    }
   },
   methods: {
-    ...mapMutations(["TOGGLE_INVOICE"]),
-    newInvoice() {
-      this.TOGGLE_INVOICE();
+    ...mapMutations(['TOGGLE_INVOICE']),
+    newInvoice(){
+      this.TOGGLE_INVOICE()
     },
 
     toggleFilterMenu() {
-      this.filterMenu = !this.filterMenu;
+      this.filterMenu = !this.filterMenu
     },
 
-    filteredInvoices(e) {
-      if (e.target.innerText === "Clear Filter") {
+    filteredInvoices(e){
+      if(e.target.innerText === 'Clear Filter'){
         this.filteredInvoice = null;
         return;
       }
-      this.filteredInvoice = e.target.innerText;
-    },
+      this.filteredInvoice = e.target.innerText
+    }
   },
   computed: {
-    ...mapState(["invoiceData"]),
+    ...mapState(['invoiceData']),
 
-    filteredData() {
-      return this.invoiceData.filter((invoice) => {
-        if (this.filteredInvoice === "Draft") {
-          return invoice.invoiceDraft === true;
+    filteredData(){
+      return this.invoiceData.filter(invoice => {
+        if(this.filteredInvoice === 'Draft'){
+          return invoice.invoiceDraft === true
         }
-        if (this.filteredInvoice === "Pending") {
-          return invoice.invoicePending === true;
+        if(this.filteredInvoice === 'Pending'){
+          return invoice.invoicePending === true
         }
-        if (this.filteredInvoice === "Paid") {
-          return invoice.invoicePaid === true;
+        if(this.filteredInvoice === 'Paid'){
+          return invoice.invoicePaid === true
         }
-        return invoice;
-      });
-    },
-  },
-};
+        return invoice
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -111,6 +113,7 @@ export default {
       .button,
       .filter {
         align-items: center;
+        cursor:pointer;
 
         span {
           font-size: 12px;
@@ -153,6 +156,7 @@ export default {
         padding: 8px 10px;
         background-color: #7c5dfa;
         border-radius: 40px;
+        cursor: pointer;
 
         .inner-button {
           margin-right: 8px;
@@ -161,6 +165,7 @@ export default {
           align-items: center;
           justify-content: center;
           background-color: #fff;
+          cursor: pointer;
           img {
             width: 10px;
             height: 10px;
